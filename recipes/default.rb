@@ -9,13 +9,11 @@ poise_service_user node['etcd']['service_user'] do
 end
 
 etcd_config node['etcd']['service_name'] do |r|
-  path node['etcd']['config']['path']
-
   node['etcd']['config'].each_pair { |k,v| r.send(k, v) }
+  notifies :restart, "etc_service[#{name}]", :delayed
 end
 
 etcd_service node['etcd']['service_name'] do |r|
   config_file node['etcd']['config']['path']
-
   node['etcd']['service'].each_pair { |k,v| r.send(k, v) }
 end
